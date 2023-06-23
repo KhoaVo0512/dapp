@@ -1,0 +1,162 @@
+import { ResetCSS, ToastListener } from '@pancakeswap/uikit'
+import BigNumber from 'bignumber.js'
+import { NetworkModal } from 'components/NetworkModal'
+import { FixedSubgraphHealthIndicator } from 'components/SubgraphHealthIndicator/FixedSubgraphHealthIndicator'
+import { useAccountEventListener } from 'hooks/useAccountEventListener'
+import useEagerConnect from 'hooks/useEagerConnect'
+import useEagerConnectMP from 'hooks/useEagerConnect.bmp'
+import useThemeCookie from 'hooks/useThemeCookie'
+import useUserAgent from 'hooks/useUserAgent'
+import { NextPage } from 'next'
+import type { AppProps } from 'next/app'
+import dynamic from 'next/dynamic'
+import Head from 'next/head'
+import Script from 'next/script'
+import { ModalAlertAddress } from 'components/Modal/ModalAlertAddress'
+import { Fragment } from 'react'
+import { PersistGate } from 'redux-persist/integration/react'
+import { persistor, useStore } from 'state'
+import { usePollBlockNumber } from 'state/block/hooks'
+import { usePollCoreFarmData } from 'state/farms/hooks'
+import TransactionsDetailModal from 'components/TransactionDetailModal'
+import useCheckTokenExpired from 'hooks/useCheckTokenExpired'
+import { Blocklist, Updaters } from '..'
+import { SentryErrorBoundary } from '../components/ErrorBoundary'
+import Menu from '../components/Menu'
+import Providers from '../Providers'
+import GlobalStyle from '../style/Global'
+
+const EasterEgg = dynamic(() => import('components/EasterEgg'), { ssr: false })
+// console.log('usePollCoreFarmData', usePollCoreFarmData);
+
+
+// This config is required for number formatting
+BigNumber.config({
+  EXPONENTIAL_AT: 1000,
+  DECIMAL_PLACES: 80,
+})
+
+function GlobalHooks() {
+  usePollBlockNumber()
+  useEagerConnect()
+  usePollCoreFarmData()
+  useUserAgent()
+  useAccountEventListener()
+  useThemeCookie()
+  return null
+}
+
+function MPGlobalHooks() {
+  usePollBlockNumber()
+  useEagerConnectMP()
+  usePollCoreFarmData()
+  useUserAgent()
+  useAccountEventListener()
+  return null
+}
+
+function MyApp(props: AppProps<{ initialReduxState: any }>) {
+  const { pageProps, Component } = props
+  const store = useStore(pageProps.initialReduxState)
+  useCheckTokenExpired()
+  return (
+    <>
+      <Head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1, viewport-fit=cover"
+        />
+        <meta
+          name="description"
+          content="CoreDoge is a Reward and GameFi Platform Token that leverages the popularity of CoreDAO to create an immersive gaming experience. The platform integrates blockchain technology, decentralized finance (DeFi), and non-fungible tokens (NFTs) to enable users to participate in gaming and earn rewards thro..."
+        />
+        <meta name="theme-color" content="#1FC7D4" />
+        <meta name="twitter:image" content="https://coredoge.xyz/opengraph.jpg" />
+        <meta
+          name="twitter:description"
+          content="CoreDoge is a Reward and GameFi Platform Token that leverages the popularity of CoreDAO to create an immersive gaming experience. The platform integrates blockchain technology, decentralized finance (DeFi), and non-fungible tokens (NFTs) to enable users to participate in gaming and earn rewards thro..."
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="CoreDoge is a Reward and GameFi Platform Token that leverages the popularity of CoreDAO to create an immersive gaming experience. The platform integrates blockchain technology, decentralized finance (DeFi), and non-fungible tokens (NFTs) to enable users to participate in gaming and earn rewards thro..." />
+
+        <title>CoreDoge</title>
+        {(Component as NextPageWithLayout).mp && (
+          // eslint-disable-next-line @next/next/no-sync-scripts
+          <script src="https://public.bnbstatic.com/static/js/mp-webview-sdk/webview-v1.0.0.min.js" id="mp-webview" />
+        )}
+
+      </Head>
+      <Providers store={store}>
+        <Blocklist>
+          {(Component as NextPageWithLayout).mp ? <MPGlobalHooks /> : <GlobalHooks />}
+          <ResetCSS />
+          <GlobalStyle />
+          <PersistGate loading={null} persistor={persistor}>
+            <Updaters />
+            <App {...props} />
+          </PersistGate>
+        </Blocklist>
+      </Providers>
+      <Script
+        strategy="afterInteractive"
+        id="google-tag"
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer', '${process.env.NEXT_PUBLIC_GTAG}');
+          `,
+        }}
+      />
+    </>
+  )
+}
+
+type NextPageWithLayout = NextPage & {
+  Layout?: React.FC<React.PropsWithChildren<unknown>>
+  /** render component without all layouts */
+  pure?: true
+  /** is mini program */
+  mp?: boolean
+  /**
+   * allow chain per page, empty array bypass chain block modal
+   * @default [1116]
+   * */
+  chains?: number[]
+}
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout
+}
+
+const ProductionErrorBoundary = process.env.NODE_ENV === 'production' ? SentryErrorBoundary : Fragment
+
+const App = ({ Component, pageProps }: AppPropsWithLayout) => {
+  if (Component.pure) {
+    return <Component {...pageProps} />
+  }
+
+  // Use the layout defined at the page level, if available
+  const Layout = Component.Layout || Fragment
+  const ShowMenu = Component.mp ? Fragment : Menu
+
+  return (
+    <ProductionErrorBoundary>
+      <ShowMenu>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </ShowMenu>
+      <EasterEgg iterations={2} />
+      <ToastListener />
+      <ModalAlertAddress />
+      <FixedSubgraphHealthIndicator />
+      <NetworkModal pageSupportedChains={Component.chains} />
+      <TransactionsDetailModal />
+    </ProductionErrorBoundary>
+  )
+}
+
+export default MyApp
