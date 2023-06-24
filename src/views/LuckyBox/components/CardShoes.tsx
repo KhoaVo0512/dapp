@@ -83,7 +83,7 @@ const CardShoes: React.FC<PropsCard> = ({
           <CustomText>Price: {nftPrice} USDT</CustomText>
         </Flex>
         {allowance >= 0 ? (
-          balanceOfToken === 0 || allowance === 0 || allowance < nftPrice ? (
+          balanceOfToken === 0 || allowance === 0 ? (
             <Button1 style={{ background: pendingBuy[ID] && '#e0e0e0' }} onClick={handleApprove}>
               Approve
             </Button1>
@@ -91,7 +91,10 @@ const CardShoes: React.FC<PropsCard> = ({
             <>
               <ColQuantity>
                 <WrapCount>
-                  <ButtonQuanlity disabled={totalSelectItems === 1 || Number(totalSelectItems) === 0} onClick={handleMinus}>
+                  <ButtonQuanlity
+                    disabled={totalSelectItems === 1 || Number(totalSelectItems) === 0}
+                    onClick={handleMinus}
+                  >
                     <MinusIcon />
                   </ButtonQuanlity>
                   <CustomInput
@@ -100,22 +103,28 @@ const CardShoes: React.FC<PropsCard> = ({
                     inputMode="numeric"
                     value={totalSelectItems}
                     onChange={handleChangeInput}
-                    placeholder='1'
+                    placeholder="1"
                   />
                   <ButtonQuanlity disabled={totalSelectItems === maxSupplyNft - totalSupplyNft} onClick={handlePlus}>
                     <PlusIcon />
                   </ButtonQuanlity>
                 </WrapCount>
               </ColQuantity>
-              <Button1
-                disabled={pendingBuy[ID]}
-                style={{ background: pendingBuy[ID] && '#e0e0e0' }}
-                onClick={() => {
-                  onHandleBuyNft({ ID, nftPrice, totalSelectItems })
-                }}
-              >
-                Buy
-              </Button1>
+              {allowance < nftPrice ? (
+                <Button1 style={{ background: pendingBuy[ID] && '#e0e0e0' }} onClick={handleApprove}>
+                  Approve
+                </Button1>
+              ) : (
+                <Button1
+                  disabled={pendingBuy[ID]}
+                  style={{ background: pendingBuy[ID] && '#e0e0e0' }}
+                  onClick={() => {
+                    onHandleBuyNft({ ID, nftPrice, totalSelectItems })
+                  }}
+                >
+                  Buy
+                </Button1>
+              )}
             </>
           )
         ) : (
