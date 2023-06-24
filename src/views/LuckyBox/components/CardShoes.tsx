@@ -43,7 +43,8 @@ const CardShoes: React.FC<PropsCard> = ({
   const handlePlus = () => {
     if (totalSelectItems >= maxSupplyNft - totalSupplyNft) onUpdateTotalBuy(maxSupplyNft - totalSupplyNft)
     else {
-      onUpdateTotalBuy(totalSelectItems + 1)
+      onUpdateTotalBuy(Number(totalSelectItems) + 1)
+      console.log(totalSelectItems)
     }
   }
 
@@ -56,6 +57,7 @@ const CardShoes: React.FC<PropsCard> = ({
   const handleChangeInput = (e) => {
     const { value } = e.target
     if (/^\d+$/.test(value) || value === '') {
+      console.log(value)
       let convertNumber = Number(value)
       if (convertNumber >= Number(maxSupplyNft - totalSupplyNft)) {
         convertNumber = Number(maxSupplyNft - totalSupplyNft)
@@ -63,7 +65,6 @@ const CardShoes: React.FC<PropsCard> = ({
       if (convertNumber < 0) {
         convertNumber = 1
       }
-      if (value === '') convertNumber = 1
       onChangeInputBuy(convertNumber)
     } else onChangeInputBuy(1)
   }
@@ -82,7 +83,7 @@ const CardShoes: React.FC<PropsCard> = ({
           <CustomText>Price: {nftPrice} USDT</CustomText>
         </Flex>
         {allowance >= 0 ? (
-          balanceOfToken === 0 || allowance === 0 ? (
+          balanceOfToken === 0 || allowance === 0 || allowance < nftPrice ? (
             <Button1 style={{ background: pendingBuy[ID] && '#e0e0e0' }} onClick={handleApprove}>
               Approve
             </Button1>
@@ -90,7 +91,7 @@ const CardShoes: React.FC<PropsCard> = ({
             <>
               <ColQuantity>
                 <WrapCount>
-                  <ButtonQuanlity disabled={totalSelectItems === 1} onClick={handleMinus}>
+                  <ButtonQuanlity disabled={totalSelectItems === 1 || Number(totalSelectItems) === 0} onClick={handleMinus}>
                     <MinusIcon />
                   </ButtonQuanlity>
                   <CustomInput
@@ -99,8 +100,9 @@ const CardShoes: React.FC<PropsCard> = ({
                     inputMode="numeric"
                     value={totalSelectItems}
                     onChange={handleChangeInput}
+                    placeholder='1'
                   />
-                  <ButtonQuanlity disabled={totalSelectItems === (maxSupplyNft - totalSupplyNft)} onClick={handlePlus}>
+                  <ButtonQuanlity disabled={totalSelectItems === maxSupplyNft - totalSupplyNft} onClick={handlePlus}>
                     <PlusIcon />
                   </ButtonQuanlity>
                 </WrapCount>

@@ -15,19 +15,16 @@ export const useBuyNFT = (chainId: number, onRefresh, balance, listTotalSupplyNf
   const { t } = useTranslation()
   const [totalNfts, setTotalNfts] = useState(listTotalSupplyNft)
   const marketplaceContract = useCoreMarketPlace(getAddress(contract.coreMarketPlace, chainId))
-  const [pendingBuy, setPendingBuy] = useState([false,false,false])
+  const [pendingBuy, setPendingBuy] = useState([false, false, false])
   const handleBuy = useCallback(async () => {
     const newArray = []
-    for(let i=0;i<3;i++){
+    for (let i = 0; i < 3; i++) {
       console.log(pendingBuy)
-      if(pendingBuy[i])
-        newArray[i] = true;
-      else if (i === balance)
-        newArray[i] = true;
-      else
-        newArray[i] = false;
+      if (pendingBuy[i]) newArray[i] = true
+      else if (i === balance) newArray[i] = true
+      else newArray[i] = false
     }
-  setPendingBuy(newArray)
+    setPendingBuy(newArray)
     try {
       console.log(balance)
       if (balance > -1) {
@@ -37,7 +34,6 @@ export const useBuyNFT = (chainId: number, onRefresh, balance, listTotalSupplyNf
           toastSuccess(t(`Successfully buy ${balance}`), <ToastDescriptionWithTx txHash={receipt.transactionHash} />)
           setClose(true)
           setRequestBuy(true)
-
           // eslint-disable-next-line no-param-reassign
           listTotalSupplyNft[balance] += totalSelectItem
           setTotalNfts(listTotalSupplyNft)
@@ -52,14 +48,15 @@ export const useBuyNFT = (chainId: number, onRefresh, balance, listTotalSupplyNf
         setRequestBuy(false)
       }
     } catch (e) {
+
       console.error(e)
       toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
     } finally {
-      setPendingBuy([false,false,false])
+      setPendingBuy([false, false, false])
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [callWithMarketGasPrice, marketplaceContract, balance, toastSuccess, t, toastError])
 
-  return { handleBuy, requestedBuy, pendingBuy, isCloseBuy, totalNfts , totalSelectItem }
+  return { handleBuy, requestedBuy, pendingBuy, isCloseBuy, totalNfts, totalSelectItem }
 }

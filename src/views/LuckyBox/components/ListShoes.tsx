@@ -63,8 +63,10 @@ const ListShoes: React.FC<Props> = () => {
   function onUpdateAmountBox(value, boxType) {
     try {
       if (boxType === 0) {
+        if (value === 0)
+          // eslint-disable-next-line no-param-reassign
+          value = ''
         dispatch(selectAmountSilverBox({ totalSilverBox: value }))
-        console.log(value)
       }
       if (boxType === 1) {
         dispatch(selectAmountGoldBox({ totalGoldBox: value }))
@@ -82,6 +84,8 @@ const ListShoes: React.FC<Props> = () => {
 
   const HandleBuyNft = ({ ID, totalSelectItems, nftPrice }) => {
     setBalance(ID)
+    // eslint-disable-next-line no-param-reassign
+    if (Number(totalSelectItems === '')) totalSelectItems = 1
     setTotalSelectItem(totalSelectItems)
     setTotalNftPrice(nftPrice)
   }
@@ -91,6 +95,7 @@ const ListShoes: React.FC<Props> = () => {
   useEffect(() => {
     const Items = SetPricesMaxTotalAndTotalSupplyNft(ListPrices, listTotalSupplyNft, listMaxSupplyNft)
     setCurrentItems([...Items])
+
     setBalance(-1)
   }, [
     ListPrices,
@@ -121,7 +126,6 @@ const ListShoes: React.FC<Props> = () => {
         handleBuy()
         const Items = SetPricesMaxTotalAndTotalSupplyNft(ListPrices, totalNfts, listMaxSupplyNft)
         setCurrentItems([...Items])
-        console.log(pendingBuy)
         setBalance(-1)
       }
     } else {
@@ -152,7 +156,7 @@ const ListShoes: React.FC<Props> = () => {
                   key={item.id}
                   nftName={item.name}
                   nftImage={item.image}
-                  nftPrice={item.price * listTotalBox[item.id]}
+                  nftPrice={ String(listTotalBox[item.id]) === '' ? Number(item.price) : (Number(item.price) * Number(listTotalBox[item.id]))}
                   nftDesc={item.desc}
                   nftType={item.nftType}
                   onHandleBuyNft={HandleBuyNft}
