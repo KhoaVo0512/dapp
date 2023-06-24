@@ -81,8 +81,8 @@ const CardShoes: React.FC<PropsCard> = ({
           </CustomText>
           <CustomText>Price: {nftPrice} USDT</CustomText>
         </Flex>
-        {allowance >= 0 ? (
-          balanceOfToken === 0 ? (
+        {allowance === 0 ? (
+          balanceOfToken === 0 || allowance === 0 ? (
             <Button1 style={{ background: pendingBuy[ID] && '#e0e0e0' }} onClick={handleApprove}>
               Approve
             </Button1>
