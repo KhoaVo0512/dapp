@@ -71,10 +71,11 @@ function PaginatedItems({ itemsPerPage, listCurrentItems }) {
   const [itemOffset, setItemOffset] = useState(0)
 
   const endOffset = itemOffset + itemsPerPage
+  const listItems = listCurrentItems.reverse()
   const currentItems = listCurrentItems.slice(itemOffset, endOffset)
-  const listItems = currentItems.reverse()
+  
   const pageCount = Math.ceil(listItems.length / itemsPerPage)
-
+  console.log(listItems)
   const handlePageClick = (event) => {
     const newOffset = (event.selected * itemsPerPage) % listCurrentItems.length
     console.log(`User requested page number ${event.selected}, which is offset ${newOffset}`)

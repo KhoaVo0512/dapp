@@ -83,7 +83,7 @@ export const FetchTokenOfOwnerByIndex = (account: string, nftBalance: number, ch
       if (nftBalance === 0) {
         setTokenOfOwnerByIndex([])
       } else {
-        for (let i = 0; i < nftBalance; i++) {
+        for (let i = nftBalance - 1; i >= 0; i--) {
           const callBoxId = [
             {
               address: getAddress(contracts.coreMarketPlace, chainId),
