@@ -45,7 +45,7 @@ const ListShoes: React.FC<Props> = () => {
   const { allowance } = GetAllowance(account, chainId, requestedApproval)
   const { balanceOfToken } = GetBalanceOfToken(account, chainId)
   const [currentItems, setCurrentItems] = useState([])
-  const { handleBuy, requestedBuy, pendingBuy, totalNfts } = useBuyNFT(
+  const { handleBuy, requestedBuy, pendingBuy, totalNfts, isCloseBuy } = useBuyNFT(
     chainId,
     onRefresh,
     balance,
@@ -69,9 +69,15 @@ const ListShoes: React.FC<Props> = () => {
         dispatch(selectAmountSilverBox({ totalSilverBox: value }))
       }
       if (boxType === 1) {
+        if (value === 0)
+          // eslint-disable-next-line no-param-reassign
+          value = ''
         dispatch(selectAmountGoldBox({ totalGoldBox: value }))
       }
       if (boxType === 2) {
+        if (value === 0)
+          // eslint-disable-next-line no-param-reassign
+          value = ''
         dispatch(selectAmountRubyBox({ totalRubyBox: value }))
       }
     } catch (e) {
@@ -91,11 +97,10 @@ const ListShoes: React.FC<Props> = () => {
   }
   useEffect(() => {
     setListTotalBox([totalSilverBox, totalGoldBox, totalRubyBox])
-  }, [totalSilverBox, totalGoldBox, totalRubyBox])
+  }, [totalSilverBox, totalGoldBox, totalRubyBox, luckyBox])
   useEffect(() => {
     const Items = SetPricesMaxTotalAndTotalSupplyNft(ListPrices, listTotalSupplyNft, listMaxSupplyNft)
     setCurrentItems([...Items])
-
     setBalance(-1)
   }, [
     ListPrices,
@@ -105,6 +110,7 @@ const ListShoes: React.FC<Props> = () => {
     allowance,
     balanceOfToken,
     account,
+
     requestedBuy,
     pendingBuy,
   ])
@@ -141,7 +147,6 @@ const ListShoes: React.FC<Props> = () => {
       setCurrentItems([...Items])
     }
   }, [approved, requestedApproval])
-
   return (
     <CsFlexContainer width="100%" flexDirection="column" mt="3rem" height="auto" minHeight="50vh">
       <CsFlex>
@@ -156,7 +161,11 @@ const ListShoes: React.FC<Props> = () => {
                   key={item.id}
                   nftName={item.name}
                   nftImage={item.image}
-                  nftPrice={ String(listTotalBox[item.id]) === '' ? Number(item.price) : (Number(item.price) * Number(listTotalBox[item.id]))}
+                  nftPrice={
+                    String(listTotalBox[item.id]) === ''
+                      ? Number(item.price)
+                      : Number(item.price) * Number(listTotalBox[item.id])
+                  }
                   nftDesc={item.desc}
                   nftType={item.nftType}
                   onHandleBuyNft={HandleBuyNft}

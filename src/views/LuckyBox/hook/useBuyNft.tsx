@@ -19,24 +19,26 @@ export const useBuyNFT = (chainId: number, onRefresh, balance, listTotalSupplyNf
   const handleBuy = useCallback(async () => {
     const newArray = []
     for (let i = 0; i < 3; i++) {
-      console.log(pendingBuy)
       if (pendingBuy[i]) newArray[i] = true
       else if (i === balance) newArray[i] = true
       else newArray[i] = false
     }
     setPendingBuy(newArray)
     try {
-      console.log(balance)
       if (balance > -1) {
         const tx = await callWithMarketGasPrice(marketplaceContract, 'buyItems', [balance, totalSelectItem])
         const receipt = await tx.wait()
         if (receipt.status) {
-          toastSuccess(t(`Successfully buy ${balance}`), <ToastDescriptionWithTx txHash={receipt.transactionHash} />)
+          toastSuccess(
+            t(`You have successfully purchased`),
+            <ToastDescriptionWithTx txHash={receipt.transactionHash} />,
+          )
           setClose(true)
           setRequestBuy(true)
           // eslint-disable-next-line no-param-reassign
           listTotalSupplyNft[balance] += totalSelectItem
           setTotalNfts(listTotalSupplyNft)
+
           onRefresh(Date.now())
         } else {
           // user rejected tx or didn't go thru
@@ -48,15 +50,14 @@ export const useBuyNFT = (chainId: number, onRefresh, balance, listTotalSupplyNf
         setRequestBuy(false)
       }
     } catch (e) {
-
       console.error(e)
       toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
     } finally {
+      setClose(false)
       setPendingBuy([false, false, false])
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [callWithMarketGasPrice, marketplaceContract, balance, toastSuccess, t, toastError])
-
-  return { handleBuy, requestedBuy, pendingBuy, isCloseBuy, totalNfts, totalSelectItem }
+  return { handleBuy, requestedBuy, pendingBuy, isCloseBuy, totalNfts }
 }

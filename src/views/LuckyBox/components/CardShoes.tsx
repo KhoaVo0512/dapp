@@ -44,7 +44,6 @@ const CardShoes: React.FC<PropsCard> = ({
     if (totalSelectItems >= maxSupplyNft - totalSupplyNft) onUpdateTotalBuy(maxSupplyNft - totalSupplyNft)
     else {
       onUpdateTotalBuy(Number(totalSelectItems) + 1)
-      console.log(totalSelectItems)
     }
   }
 
@@ -56,8 +55,8 @@ const CardShoes: React.FC<PropsCard> = ({
   }
   const handleChangeInput = (e) => {
     const { value } = e.target
+    console.log(value)
     if (/^\d+$/.test(value) || value === '') {
-      console.log(value)
       let convertNumber = Number(value)
       if (convertNumber >= Number(maxSupplyNft - totalSupplyNft)) {
         convertNumber = Number(maxSupplyNft - totalSupplyNft)
@@ -66,8 +65,10 @@ const CardShoes: React.FC<PropsCard> = ({
         convertNumber = 1
       }
       onChangeInputBuy(convertNumber)
+      
     } else onChangeInputBuy(1)
   }
+  
   return (
     <>
       <Container>
@@ -103,7 +104,7 @@ const CardShoes: React.FC<PropsCard> = ({
                     inputMode="numeric"
                     value={totalSelectItems}
                     onChange={handleChangeInput}
-                    placeholder="1"
+                    placeholder=""
                   />
                   <ButtonQuanlity disabled={totalSelectItems === maxSupplyNft - totalSupplyNft} onClick={handlePlus}>
                     <PlusIcon />
@@ -116,8 +117,8 @@ const CardShoes: React.FC<PropsCard> = ({
                 </Button1>
               ) : (
                 <Button1
-                  disabled={pendingBuy[ID]}
-                  style={{ background: pendingBuy[ID] && '#e0e0e0' }}
+                  disabled={pendingBuy[ID] || Number(totalSelectItems)===0}
+                  style={{ background: pendingBuy[ID] && '#e0e0e0' || Number(totalSelectItems)===0 && '#e0e0e0' }}
                   onClick={() => {
                     onHandleBuyNft({ ID, nftPrice, totalSelectItems })
                   }}
