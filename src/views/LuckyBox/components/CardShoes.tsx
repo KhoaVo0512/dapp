@@ -99,14 +99,15 @@ const CardShoes: React.FC<PropsCard> = ({
                     <MinusIcon />
                   </ButtonQuanlity>
                   <CustomInput
+                    disabled={maxSupplyNft - totalSupplyNft === 0}
                     type="text"
                     scale="lg"
                     inputMode="numeric"
-                    value={totalSelectItems}
+                    value={maxSupplyNft - totalSupplyNft === 0 ? '0' : totalSelectItems}
                     onChange={handleChangeInput}
                     placeholder=""
                   />
-                  <ButtonQuanlity disabled={totalSelectItems === maxSupplyNft - totalSupplyNft} onClick={handlePlus}>
+                  <ButtonQuanlity disabled={totalSelectItems === maxSupplyNft - totalSupplyNft || maxSupplyNft - totalSupplyNft === 0} onClick={handlePlus}>
                     <PlusIcon />
                   </ButtonQuanlity>
                 </WrapCount>
@@ -117,8 +118,8 @@ const CardShoes: React.FC<PropsCard> = ({
                 </Button1>
               ) : (
                 <Button1
-                  disabled={pendingBuy[ID] || Number(totalSelectItems)===0}
-                  style={{ background: pendingBuy[ID] && '#e0e0e0' || Number(totalSelectItems)===0 && '#e0e0e0' }}
+                  disabled={pendingBuy[ID] || Number(totalSelectItems)===0 || maxSupplyNft - totalSupplyNft === 0}
+                  style={{ background: pendingBuy[ID] && '#e0e0e0' || Number(totalSelectItems)===0 && '#e0e0e0' || maxSupplyNft - totalSupplyNft === 0 && '#e0e0e0'}}
                   onClick={() => {
                     onHandleBuyNft({ ID, nftPrice, totalSelectItems })
                   }}

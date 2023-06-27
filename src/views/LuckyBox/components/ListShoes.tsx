@@ -130,6 +130,7 @@ const ListShoes: React.FC<Props> = () => {
         setBalance(-1)
       } else {
         handleBuy()
+        onUpdateAmountBox(1, balance)
         const Items = SetPricesMaxTotalAndTotalSupplyNft(ListPrices, totalNfts, listMaxSupplyNft)
         setCurrentItems([...Items])
         setBalance(-1)
