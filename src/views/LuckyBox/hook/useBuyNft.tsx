@@ -4,7 +4,7 @@ import { ToastDescriptionWithTx } from 'components/Toast'
 import contract from 'config/constants/contracts'
 import { useCallWithMarketGasPrice } from 'hooks/useCallWithMarketGasPrice'
 import { useCoreMarketPlace } from 'hooks/useContract'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { getAddress } from 'utils/addressHelpers'
 
 export const useBuyNFT = (chainId: number, onRefresh, balance, listTotalSupplyNft: any, totalSelectItem: any) => {
@@ -53,7 +53,7 @@ export const useBuyNFT = (chainId: number, onRefresh, balance, listTotalSupplyNf
       console.error(e)
       toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
     } finally {
-      setClose(false)
+      setClose(true)
       setPendingBuy([false, false, false])
     }
 

@@ -110,7 +110,6 @@ const ListShoes: React.FC<Props> = () => {
     allowance,
     balanceOfToken,
     account,
-
     requestedBuy,
     pendingBuy,
   ])

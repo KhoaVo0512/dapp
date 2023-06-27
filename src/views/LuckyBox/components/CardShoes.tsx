@@ -99,6 +99,7 @@ const CardShoes: React.FC<PropsCard> = ({
                     <MinusIcon />
                   </ButtonQuanlity>
                   <CustomInput
+                  style={{backgroundColor: '#f0f2ff'}}
                     disabled={maxSupplyNft - totalSupplyNft === 0}
                     type="text"
                     scale="lg"

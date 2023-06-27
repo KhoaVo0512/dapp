@@ -67,15 +67,11 @@ function Items({ currentItems }) {
   )
 }
 
-function PaginatedItems({ itemsPerPage, listCurrentItems }) {
+const PaginatedItems = ({ itemsPerPage, listCurrentItems }) => {
   const [itemOffset, setItemOffset] = useState(0)
-
   const endOffset = itemOffset + itemsPerPage
-  const listItems = listCurrentItems.reverse()
   const currentItems = listCurrentItems.slice(itemOffset, endOffset)
-  
-  const pageCount = Math.ceil(listItems.length / itemsPerPage)
-  console.log(listItems)
+  const pageCount = Math.ceil(listCurrentItems.length / itemsPerPage)
   const handlePageClick = (event) => {
     const newOffset = (event.selected * itemsPerPage) % listCurrentItems.length
     console.log(`User requested page number ${event.selected}, which is offset ${newOffset}`)
@@ -121,9 +117,8 @@ const ListShoes: React.FC<Props> = () => {
   const { listNfts } = FetDataNft(tokenOfOwnerByIndex)
   const [listCurrentItems, setListCurrentItems] = useState([])
   useEffect(() => {
-    setListCurrentItems(listNfts)
+    setListCurrentItems(listNfts.sort((a, b) => b.id - a.id))
   }, [nftBalance, tokenOfOwnerByIndex, listNfts])
-
   return (
     <>
       {listCurrentItems.length === 0 ? (
