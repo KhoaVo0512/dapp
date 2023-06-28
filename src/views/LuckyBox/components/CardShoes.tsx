@@ -94,14 +94,14 @@ const CardShoes: React.FC<PropsCard> = ({
               <ColQuantity>
                 <WrapCount>
                   <ButtonQuanlity
-                    disabled={totalSelectItems === 1 || Number(totalSelectItems) === 0}
+                    disabled={pendingBuy[ID] || totalSelectItems === 1 || Number(totalSelectItems) === 0}
                     onClick={handleMinus}
                   >
                     <MinusIcon />
                   </ButtonQuanlity>
                   <CustomInput
                     style={{ backgroundColor: '#f0f2ff' }}
-                    disabled={maxSupplyNft - totalSupplyNft === 0}
+                    disabled={pendingBuy[ID] || maxSupplyNft - totalSupplyNft === 0}
                     type="text"
                     scale="lg"
                     inputMode="numeric"
@@ -110,7 +110,7 @@ const CardShoes: React.FC<PropsCard> = ({
                     placeholder=""
                   />
                   <ButtonQuanlity
-                    disabled={totalSelectItems === maxSupplyNft - totalSupplyNft || maxSupplyNft - totalSupplyNft === 0}
+                    disabled={pendingBuy[ID] || totalSelectItems === maxSupplyNft - totalSupplyNft || maxSupplyNft - totalSupplyNft === 0}
                     onClick={handlePlus}
                   >
                     <PlusIcon />
