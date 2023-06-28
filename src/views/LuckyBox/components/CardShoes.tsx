@@ -143,7 +143,7 @@ const CardShoes: React.FC<PropsCard> = ({
                     onHandleBuyNft({ ID, nftPrice, totalSelectItems })
                   }}
                 >
-                  Buy {pendingTx[ID] && <FontAwesomeIcon icon={faArrowsRotate} spin/>}
+                  Buy {pendingBuy[ID] && <FontAwesomeIcon icon={faArrowsRotate} spin/>}
                 </Button1>
               )}
             </>
