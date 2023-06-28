@@ -16,9 +16,9 @@ export const useApprove = (chainId: number, contractAddress: string, approved: a
   const { t } = useTranslation()
   const tokenAddress = useDemoUseContract(contractAddress)
   const runMarketplaceContract = getAddress(contracts.coreMarketPlace, chainId)
-  const [pendingTx, setPendingTx] = useState(false)
+  const [pendingTx, setPendingTx] =  useState([false, false, false])
   const handleApprove = useCallback(async () => {
-    setPendingTx(true)
+    setPendingTx([true, true, true])
     try {
       if (approved) {
         const tx = await callWithMarketGasPrice(tokenAddress, 'approve', [runMarketplaceContract, MaxUint256])
@@ -30,12 +30,11 @@ export const useApprove = (chainId: number, contractAddress: string, approved: a
             <ToastDescriptionWithTx txHash={receipt.transactionHash} />
           )
           setRequestedApproval(true)
-          setPendingTx(false)
+        
         } else {
           // user rejected tx or didn't go thru
           toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
           setRequestedApproval(false)
-          setPendingTx(false)
         }
       } else {
         setRequestedApproval(false);
@@ -43,7 +42,8 @@ export const useApprove = (chainId: number, contractAddress: string, approved: a
     } catch (e) {
       console.error(e)
       toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
-      setPendingTx(false)
+    }finally {
+      setPendingTx([false,false,false])
     }
 
   }, [callWithMarketGasPrice, tokenAddress, runMarketplaceContract, toastSuccess, t, toastError, approved])

@@ -38,14 +38,18 @@ const ListShoes: React.FC<Props> = () => {
   const [totalSelectItem, setTotalSelectItem] = useState(1)
   const [totalNftPrice, setTotalNftPrice] = useState(0)
   const [approved, setApproved] = useState(false)
-  const { handleApprove, requestedApproval } = useApprove(1116, '0x585b34473CEac1D60BD9B9381D6aBaF122008504', approved)
+  const { handleApprove, requestedApproval, pendingTx } = useApprove(
+    1116,
+    '0x585b34473CEac1D60BD9B9381D6aBaF122008504',
+    approved,
+  )
   const { ListPrices } = GetPriceNfts(chainId)
   const { listTotalSupplyNft } = GetTotalSupplyNft(chainId)
   const { listMaxSupplyNft } = GetMaxSupplyNft(chainId)
   const { allowance } = GetAllowance(account, chainId, requestedApproval)
   const { balanceOfToken } = GetBalanceOfToken(account, chainId)
   const [currentItems, setCurrentItems] = useState([])
-  const { handleBuy, requestedBuy, pendingBuy, totalNfts, isCloseBuy } = useBuyNFT(
+  const { handleBuy, requestedBuy, pendingBuy, totalNfts } = useBuyNFT(
     chainId,
     onRefresh,
     balance,
@@ -139,8 +143,10 @@ const ListShoes: React.FC<Props> = () => {
     }
   }, [balance])
   useEffect(() => {
-    handleApprove()
-    setApproved(false)
+    if (approved) {
+      handleApprove()
+      setApproved(false)
+    }
     if (requestedApproval === true) {
       const Items = SetPricesMaxTotalAndTotalSupplyNft(ListPrices, listTotalSupplyNft, listMaxSupplyNft)
       setCurrentItems([...Items])
@@ -165,7 +171,7 @@ const ListShoes: React.FC<Props> = () => {
                       ? Number(item.price)
                       : Number(item.price) * Number(listTotalBox[item.id])
                   }
-                  nftDesc={item.desc}
+                  pendingTx={pendingTx}
                   nftType={item.nftType}
                   onHandleBuyNft={HandleBuyNft}
                   handleApprove={onHandleApprove}

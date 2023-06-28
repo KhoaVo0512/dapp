@@ -1,14 +1,14 @@
 /* eslint-disable react/button-has-type */
 import { Flex, Text, Button, MinusIcon, Input, PlusIcon } from '@pancakeswap/uikit'
 import React, { useState } from 'react'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 
 interface PropsCard {
   ID?: number
   nftName?: string
   nftImage?: string
   nftPrice?: any
-  nftDesc?: any
+  pendingTx?: any
   nftType?: string
   onHandleBuyNft?: any
   handleApprove?: any
@@ -27,7 +27,7 @@ const CardShoes: React.FC<PropsCard> = ({
   nftName,
   nftImage,
   nftPrice,
-  nftDesc,
+  pendingTx,
   onHandleBuyNft,
   handleApprove,
   allowance,
@@ -65,10 +65,9 @@ const CardShoes: React.FC<PropsCard> = ({
         convertNumber = 1
       }
       onChangeInputBuy(convertNumber)
-      
     } else onChangeInputBuy(1)
   }
-  
+  console.log(pendingTx)
   return (
     <>
       <Container>
@@ -84,8 +83,8 @@ const CardShoes: React.FC<PropsCard> = ({
         </Flex>
         {allowance >= 0 ? (
           balanceOfToken === 0 || allowance === 0 ? (
-            <Button1 style={{ background: pendingBuy[ID] && '#e0e0e0' }} onClick={handleApprove}>
-              Approve
+            <Button1 disabled={pendingTx[ID]} style={{ background: pendingTx[ID] && '#e0e0e0', cursor: 'not-allowed'}} onClick={handleApprove}>
+              {pendingTx[ID] ? <Loading/> : 'Approve'}
             </Button1>
           ) : (
             <>
@@ -98,7 +97,7 @@ const CardShoes: React.FC<PropsCard> = ({
                     <MinusIcon />
                   </ButtonQuanlity>
                   <CustomInput
-                  style={{backgroundColor: '#f0f2ff'}}
+                    style={{ backgroundColor: '#f0f2ff' }}
                     disabled={maxSupplyNft - totalSupplyNft === 0}
                     type="text"
                     scale="lg"
@@ -107,25 +106,40 @@ const CardShoes: React.FC<PropsCard> = ({
                     onChange={handleChangeInput}
                     placeholder=""
                   />
-                  <ButtonQuanlity disabled={totalSelectItems === maxSupplyNft - totalSupplyNft || maxSupplyNft - totalSupplyNft === 0} onClick={handlePlus}>
+                  <ButtonQuanlity
+                    disabled={totalSelectItems === maxSupplyNft - totalSupplyNft || maxSupplyNft - totalSupplyNft === 0}
+                    onClick={handlePlus}
+                  >
                     <PlusIcon />
                   </ButtonQuanlity>
                 </WrapCount>
               </ColQuantity>
               {allowance < nftPrice ? (
-                <Button1 style={{ background: pendingBuy[ID] && '#e0e0e0' }} onClick={handleApprove}>
-                  Approve
+                <Button1
+                  disabled={pendingTx[ID]}
+                  style={{ background: pendingTx[ID] && '#e0e0e0'}}
+                  onClick={handleApprove}
+                >
+                  {pendingTx[ID] ? <Loading/> : 'Approve'}
                 </Button1>
               ) : (
                 <Button1
-                  disabled={pendingBuy[ID] || Number(totalSelectItems)===0 || maxSupplyNft - totalSupplyNft === 0}
-                  style={{ background: pendingBuy[ID] && '#e0e0e0' || Number(totalSelectItems)===0 && '#e0e0e0' || maxSupplyNft - totalSupplyNft === 0 && '#e0e0e0',
-                cursor: pendingBuy[ID] && 'wait' || Number(totalSelectItems)===0 && 'not-allowed' || maxSupplyNft - totalSupplyNft === 0 && 'not-allowed'}}
+                  disabled={pendingBuy[ID] || Number(totalSelectItems) === 0 || maxSupplyNft - totalSupplyNft === 0}
+                  style={{
+                    background:
+                      (pendingBuy[ID] && '#e0e0e0') ||
+                      (Number(totalSelectItems) === 0 && '#e0e0e0') ||
+                      (maxSupplyNft - totalSupplyNft === 0 && '#e0e0e0'),
+                    cursor:
+                      (pendingBuy[ID] && 'not-allowed') ||
+                      (Number(totalSelectItems) === 0 && 'not-allowed') ||
+                      (maxSupplyNft - totalSupplyNft === 0 && 'not-allowed'),
+                  }}
                   onClick={() => {
                     onHandleBuyNft({ ID, nftPrice, totalSelectItems })
                   }}
                 >
-                  Buy
+                  {pendingBuy[ID] ? <Loading/> : 'Buy'}
                 </Button1>
               )}
             </>
@@ -139,6 +153,38 @@ const CardShoes: React.FC<PropsCard> = ({
 }
 
 export default CardShoes
+export const Loading = () => {
+  const rotation = keyframes`
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    `
+
+  const Spinner = styled.div`
+    border: 5px solid rgba(0, 0, 0, 0.1);
+    border-top-color: #07d669;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: ${rotation} 1s ease-in-out infinite;
+    margin: 0 auto;
+  `
+
+  const Wrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  `
+
+  return (
+    <Wrapper>
+      <Spinner />
+    </Wrapper>
+  )
+}
 
 const Container = styled.div<{ isHaving?: boolean; background?: string }>`
   width: 310px;

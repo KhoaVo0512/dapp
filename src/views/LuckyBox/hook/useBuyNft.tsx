@@ -53,7 +53,7 @@ export const useBuyNFT = (chainId: number, onRefresh, balance, listTotalSupplyNf
       console.error(e)
       toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
     } finally {
-      setClose(true)
+      setClose(false)
       setPendingBuy([false, false, false])
     }
 

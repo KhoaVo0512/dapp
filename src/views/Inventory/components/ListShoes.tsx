@@ -116,13 +116,16 @@ const ListShoes: React.FC<Props> = () => {
   const { nftBalance } = GetNftBalance(account, chainId)
   const { tokenOfOwnerByIndex } = FetchTokenOfOwnerByIndex(account, nftBalance, chainId)
   const { listNfts } = FetDataNft(tokenOfOwnerByIndex)
-  console.log(nftBalance)
   const [listCurrentItems, setListCurrentItems] = useState([])
   useEffect(() => {
+   if (account !== null || nftBalance !== 0){
     if (nftBalance !== 0) {
       setListCurrentItems(listNfts.sort((a, b) => b.id - a.id))
       // eslint-disable-next-line react-hooks/exhaustive-deps
     } else setListCurrentItems([])
+   }else {
+    setListCurrentItems([])
+   }
   }, [nftBalance, tokenOfOwnerByIndex, listNfts, account])
   return (
     <>
