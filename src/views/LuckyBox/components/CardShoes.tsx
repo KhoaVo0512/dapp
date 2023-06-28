@@ -2,6 +2,8 @@
 import { Flex, Text, Button, MinusIcon, Input, PlusIcon } from '@pancakeswap/uikit'
 import React, { useState } from 'react'
 import styled, { keyframes } from 'styled-components'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowsRotate} from '@fortawesome/free-solid-svg-icons'
 
 interface PropsCard {
   ID?: number
@@ -80,11 +82,12 @@ const CardShoes: React.FC<PropsCard> = ({
             {totalSupplyNft}/{maxSupplyNft}
           </CustomText>
           <CustomText>Price: {nftPrice} USDT</CustomText>
+          
         </Flex>
         {allowance >= 0 ? (
           balanceOfToken === 0 || allowance === 0 ? (
             <Button1 disabled={pendingTx[ID]} style={{ background: pendingTx[ID] && '#e0e0e0', cursor: 'not-allowed'}} onClick={handleApprove}>
-              {pendingTx[ID] ? <Loading/> : 'Approve'}
+              Approve {pendingTx[ID] && <FontAwesomeIcon icon={faArrowsRotate} spin/>}
             </Button1>
           ) : (
             <>
@@ -120,7 +123,8 @@ const CardShoes: React.FC<PropsCard> = ({
                   style={{ background: pendingTx[ID] && '#e0e0e0'}}
                   onClick={handleApprove}
                 >
-                  {pendingTx[ID] ? <Loading/> : 'Approve'}
+                  Approve {pendingTx[ID] && <FontAwesomeIcon icon={faArrowsRotate} spin/>}
+                  
                 </Button1>
               ) : (
                 <Button1
@@ -139,7 +143,7 @@ const CardShoes: React.FC<PropsCard> = ({
                     onHandleBuyNft({ ID, nftPrice, totalSelectItems })
                   }}
                 >
-                  {pendingBuy[ID] ? <Loading/> : 'Buy'}
+                  Buy {pendingTx[ID] && <FontAwesomeIcon icon={faArrowsRotate} spin/>}
                 </Button1>
               )}
             </>
