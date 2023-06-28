@@ -83,8 +83,8 @@ const PaginatedItems = ({ itemsPerPage, listCurrentItems }) => {
       <Items currentItems={currentItems} />
       <PaginationWrapper>
         <ReactPaginate
-          previousLabel="Previous"
-          nextLabel="Next"
+          previousLabel="<"
+          nextLabel=">"
           pageClassName="page-item"
           pageLinkClassName="page-link"
           previousClassName="page-item"
@@ -112,18 +112,23 @@ interface Props {
 }
 const ListShoes: React.FC<Props> = () => {
   const { account, chainId } = useActiveWeb3React()
+
   const { nftBalance } = GetNftBalance(account, chainId)
   const { tokenOfOwnerByIndex } = FetchTokenOfOwnerByIndex(account, nftBalance, chainId)
   const { listNfts } = FetDataNft(tokenOfOwnerByIndex)
+  console.log(nftBalance)
   const [listCurrentItems, setListCurrentItems] = useState([])
   useEffect(() => {
-    setListCurrentItems(listNfts.sort((a, b) => b.id - a.id))
-  }, [nftBalance, tokenOfOwnerByIndex, listNfts])
+    if (nftBalance !== 0) {
+      setListCurrentItems(listNfts.sort((a, b) => b.id - a.id))
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    } else setListCurrentItems([])
+  }, [nftBalance, tokenOfOwnerByIndex, listNfts, account])
   return (
     <>
-      {listCurrentItems.length === 0 ? (
+      {listCurrentItems?.length === 0 ? (
         <Flex width="100%" justifyContent="center">
-          <Text mt="2rem">{nftBalance === 0 ? 'No NFT' : <Loading />}</Text>
+          <Text mt="2rem">{nftBalance !== 0 ? <Loading /> : 'No NFT'}</Text>
         </Flex>
       ) : (
         <PaginatedItems itemsPerPage={9} listCurrentItems={listCurrentItems} />
@@ -185,11 +190,6 @@ const CsFlex = styled(Flex)`
     padding: 0px;
   }
   @media screen and (max-width: 768px) {
-    justify-content: space-between;
-    column-gap: 0px;
-    padding: 0px;
-  }
-  @media screen and (max-width: 600px) {
     justify-content: center;
     gap: 0px;
     padding: 0px 10px;
@@ -202,13 +202,16 @@ const CsFlexContainer = styled(Flex)`
 `
 
 const PaginationWrapper = styled.div`
+  @media screen and (max-width: 375px) {
+    padding: 15px 0px 15px 0px;
+  }
   .pagination {
     display: flex;
     justify-content: center;
     margin-top: 20px;
 
     li {
-      margin: 0 5px;
+      margin: 0 2px;
       display: inline-block;
 
       a {

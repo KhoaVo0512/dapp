@@ -77,7 +77,6 @@ const CardShoes: React.FC<PropsCard> = ({
             <ImgShoes src={nftImage} alt="Image Box" />
           </CustomCard>
           <CustomText>{nftName}</CustomText>
-          <CustomText>{nftDesc}</CustomText>
           <CustomText>
             {totalSupplyNft}/{maxSupplyNft}
           </CustomText>
@@ -120,7 +119,8 @@ const CardShoes: React.FC<PropsCard> = ({
               ) : (
                 <Button1
                   disabled={pendingBuy[ID] || Number(totalSelectItems)===0 || maxSupplyNft - totalSupplyNft === 0}
-                  style={{ background: pendingBuy[ID] && '#e0e0e0' || Number(totalSelectItems)===0 && '#e0e0e0' || maxSupplyNft - totalSupplyNft === 0 && '#e0e0e0'}}
+                  style={{ background: pendingBuy[ID] && '#e0e0e0' || Number(totalSelectItems)===0 && '#e0e0e0' || maxSupplyNft - totalSupplyNft === 0 && '#e0e0e0',
+                cursor: pendingBuy[ID] && 'wait' || Number(totalSelectItems)===0 && 'not-allowed' || maxSupplyNft - totalSupplyNft === 0 && 'not-allowed'}}
                   onClick={() => {
                     onHandleBuyNft({ ID, nftPrice, totalSelectItems })
                   }}
@@ -149,7 +149,7 @@ const Container = styled.div<{ isHaving?: boolean; background?: string }>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 700px) {
     padding: 15px 0px 15px 0px;
   }
   background-color: #f0f2ff;
@@ -182,7 +182,7 @@ const ColQuantity = styled(Flex)`
   gap: 10px;
   align-items: center;
   justify-content: center;
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 700px) {
     justify-content: center;
   }
 `

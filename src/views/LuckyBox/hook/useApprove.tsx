@@ -26,7 +26,7 @@ export const useApprove = (chainId: number, contractAddress: string, approved: a
 
         if (receipt.status) {
           toastSuccess(
-            t('Contract Enabled'),
+            t('successful approve'),
             <ToastDescriptionWithTx txHash={receipt.transactionHash} />
           )
           setRequestedApproval(true)

@@ -76,9 +76,10 @@ export const GetNftBalance = (account: string, chainId: number) => {
 
 export const FetchTokenOfOwnerByIndex = (account: string, nftBalance: number, chainId: number) => {
   const [tokenOfOwnerByIndex, setTokenOfOwnerByIndex] = useState([])
+  console.log(nftBalance)
+  console.log(account)
   useEffect(() => {
     const fetchDataBox = async () => {
-      console.log('FetchTokenOfOwnerByIndex', nftBalance, account, chainId)
       const arr = []
       if (nftBalance === 0) {
         setTokenOfOwnerByIndex([])
@@ -99,18 +100,16 @@ export const FetchTokenOfOwnerByIndex = (account: string, nftBalance: number, ch
         setTokenOfOwnerByIndex(arr)
       }
     }
-    if (account != null) {
+    if (account != null && nftBalance !== 0) {
       fetchDataBox()
     } else {
       setTokenOfOwnerByIndex([])
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, nftBalance])
   return { tokenOfOwnerByIndex }
 }
 
-export const FetDataNft = (ListTokenId: number[]) => {
-  console.log('FetDataNft', ListTokenId)
+export const FetDataNft = (ListTokenId: any) => {
   const [listNfts, setListNfts] = useState([])
   useEffect(() => {
     const getData = async () => {
@@ -123,13 +122,13 @@ export const FetDataNft = (ListTokenId: number[]) => {
 
       if (Nfts.length > 0) {
         setListNfts(Nfts)
+      }else {
+        setListNfts([])
       }
     }
-
     if (listNfts.length < ListTokenId.length) {
       getData()
     }
   }, [ListTokenId])
-
   return { listNfts }
 }

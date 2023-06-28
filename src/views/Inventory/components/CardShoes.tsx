@@ -61,7 +61,7 @@ const Container = styled.div<{ isHaving?: boolean, background?: string }>`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    @media screen and (max-width: 600px){
+    @media screen and (max-width: 700px){
         padding: 15px 0px 15px 0px;
     }
     background-color: #f0f2ff;
